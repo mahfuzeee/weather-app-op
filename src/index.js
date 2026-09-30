@@ -25,7 +25,7 @@ document.getElementById("city-input").addEventListener("keypress", (e) => {
 });
 
 async function handleSearch() {
-  const query = document.getElementById("city-input").value.trim() || "dhaka";
+  const query = document.getElementById("city-input").value.trim() || "Dhaka";
   if (!query) return;
 
   try {
@@ -39,7 +39,12 @@ async function handleSearch() {
       return;
     }
 
-    const { latitude, longitude, name, country } = geoData.results[0];
+    const {
+      latitude = 23.7104,
+      longitude = 9.40744,
+      name = "Dhaka",
+      country = "Bangladesh",
+    } = geoData.results[0];
 
     // 2. Forecast API Step
     const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
@@ -88,3 +93,5 @@ function updateUI(locationLabel, data) {
 
   document.getElementById("weather-display").classList.remove("hidden");
 }
+
+await handleSearch();
