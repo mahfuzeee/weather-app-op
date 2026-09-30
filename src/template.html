@@ -1,11 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Hello, Mahfuz!</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="weather-container">
+      <header>
+        <input
+          type="text"
+          id="city-input"
+          placeholder="Enter city name..."
+          autocomplete="off"
+        />
+        <button id="search-btn">Search</button>
+      </header>
+
+      <main id="weather-display" class="hidden">
+        <section class="current-weather">
+          <h2 id="location-name">City Name</h2>
+          <div class="temp-display"><span id="current-temp">--</span>°C</div>
+          <p id="current-condition">Condition</p>
+        </section>
+
+        <section class="forecast-section">
+          <h3>3-Day Forecast</h3>
+          <div id="forecast-container" class="forecast-grid"></div>
+        </section>
+      </main>
+    </div>
+    <script src="./index.js"></script>
+  </body>
 </html>
