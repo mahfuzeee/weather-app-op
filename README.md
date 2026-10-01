@@ -1,15 +1,17 @@
 # Weather App
 
-A lightweight weather dashboard built with plain JavaScript and Webpack. The app lets users search for a city, fetch its current weather and 3-day forecast, and display the results in a clean card-based layout.
+A lightweight weather dashboard built with plain JavaScript and Webpack. Search for a city to see current conditions and a five-day forecast, with temperature, wind, precipitation, and UV details.
 
 ## Features
 
 - Search for a city by name
 - Current temperature and weather condition
-- 3-day forecast summary
+- Temperature display in Celsius or Fahrenheit
+- Five-day forecast with daily high/low temperatures and precipitation probability
+- Current wind speed and direction, precipitation, and UV index
 - Uses the Open-Meteo geocoding and forecast APIs
 - Fully client-side implementation with no backend required
-- Responsive single-page interface
+- Responsive single-page dashboard
 
 ## Tech Stack
 
@@ -38,7 +40,7 @@ weather-app-op/
 - Geocoding API: https://geocoding-api.open-meteo.com/v1/search
 - Forecast API: https://api.open-meteo.com/v1/forecast
 
-The app searches for a city using the geocoding endpoint, then requests weather data for the matched latitude and longitude.
+The app searches for a city using the geocoding endpoint, then requests current and daily weather data for the matched latitude and longitude. It uses the location's automatic time zone and does not require an API key.
 
 ## Getting Started
 
@@ -54,33 +56,35 @@ npm install
 npx webpack serve
 ```
 
-This starts the webpack dev server and serves the app locally in the browser.
+This starts the webpack development server. Open the local URL shown in the terminal (usually `http://localhost:8080`). The dashboard loads Dhaka's weather on startup; use the search field to look up another city.
 
 ### 3. Build for production
 
 ```bash
-npx webpack --mode production
+npm run build
 ```
 
 The production bundle is generated in the `dist` folder.
 
+## Deploying
+
+The project includes a GitHub Pages deployment script. Configure the repository's GitHub Pages settings to publish from the `gh-pages` branch, then run:
+
+```bash
+npm run deploy
+```
+
+The `predeploy` script builds the app before publishing `dist`.
+
 ## Usage
 
-1. Open the app in your browser.
-2. Type a city name in the input box.
-3. Click the Search button or press Enter.
-4. The app fetches the city coordinates and displays the current temperature plus a 3-day forecast.
+1. Open the app; it loads Dhaka's weather automatically.
+2. Enter a city name and click **Search** or press Enter.
+3. Review the current conditions and five-day forecast.
+4. Use the temperature button to switch between Celsius and Fahrenheit.
 
 ## Notes
 
-- The app defaults to Dhaka if the input is empty.
-- Weather states are mapped from Open-Meteo `weather_code` values to readable text.
-- If a location is not found, the app shows an alert message.
-
-## Author
-
-Md. Mahfuzur Rahman
-
-## License
-
-ISC
+- An empty search uses Dhaka as the default; the initial page load also fetches Dhaka.
+- Weather conditions are mapped from Open-Meteo `weather_code` values to labels and icons.
+- Search and network errors are displayed in the dashboard.
