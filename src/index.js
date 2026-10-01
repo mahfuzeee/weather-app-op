@@ -124,7 +124,9 @@ async function handleSearch() {
     const weatherResponse = await fetch(weatherUrl);
     const weatherData = await weatherResponse.json();
 
-    updateUI(geoData.results[0], weatherData);
+    latestPlace = geoData.results[0];
+    latestWeather = weatherData;
+    updateUI(latestPlace, latestWeather);
 
     setStatus("");
   } catch (error) {
@@ -144,10 +146,12 @@ function compass(deg) {
 }
 
 let unit = "C";
+let latestPlace;
+let latestWeather;
 
 function formatTemperature(celsius) {
   const value = unit === "F" ? (celsius * 9) / 5 + 32 : celsius;
-  return `${Math.round(value)}`;
+  return `${Math.round(value)}°${unit}`;
 }
 
 //Function for updating UI
@@ -158,7 +162,7 @@ function updateUI(place, data) {
   $("place").textContent = [place.name, place.admin1, place.country]
     .filter(Boolean)
     .join(", ");
-  $("temp").textContent = Math.round(c.temperature_2m) + "°C";
+  $("temp").textContent = formatTemperature(c.temperature_2m);
   $("cond").textContent = label;
   $("cIcon").innerHTML = icon(kind);
   $("wind").textContent =
@@ -187,11 +191,11 @@ function updateUI(place, data) {
       "</div>" +
       icon(dKind) +
       '<div class="hi">' +
-      Math.round(d.temperature_2m_max[i]) +
-      "°</div>" +
+      formatTemperature(d.temperature_2m_max[i]) +
+      "</div>" +
       '<div class="lo">' +
-      Math.round(d.temperature_2m_min[i]) +
-      "°</div>" +
+      formatTemperature(d.temperature_2m_min[i]) +
+      "</div>" +
       '<div class="rain">' +
       d.precipitation_probability_max[i] +
       "% rain</div>";
@@ -199,13 +203,6 @@ function updateUI(place, data) {
     $("days").appendChild(el);
   });
   out.hidden = false;
-  toggleBtn.addEventListener("click", () => {
-    const isPressed = toggleBtn.getAttribute("aria-pressed") === "true";
-    unit = isPressed ? "C" : "F";
-    toggleBtn.setAttribute("aria-pressed", !isPressed);
-    $("temp").textContent = formatTemperature(c.temperature_2m) + "°" + unit;
-    toggleBtn.textContent = isPressed ? "°F" : "°C";
-  });
 }
 
 //Event Listener
@@ -214,4 +211,13 @@ form.addEventListener("submit", (e) => {
   handleSearch();
 });
 
+toggleBtn.addEventListener("click", () => {
+  unit = unit === "C" ? "F" : "C";
+  toggleBtn.textContent = `°${unit === "F" ? "C" : "F"}`;
+  toggleBtn.setAttribute("aria-pressed", String(unit === "F"));
+
+  if (latestPlace && latestWeather) {
+    updateUI(latestPlace, latestWeather);
+  }
+});
 await handleSearch();
