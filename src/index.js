@@ -22,12 +22,14 @@ const weatherCodes = {
   95: ["Thunderstorm", "storm"],
 };
 
+//Function for getting elements
 const $ = (id) => document.getElementById(id);
 const form = $("form"),
   input = $("q"),
   btn = $("btn"),
   statusEl = $("status"),
-  out = $("out");
+  out = $("out"),
+  toggleBtn = $("unit");
 
 function getWeatherCondition(code) {
   return weatherCodes[code] || "Unspecified Condition";
@@ -118,7 +120,7 @@ async function handleSearch() {
     const { latitude = 23.7104, longitude = 9.40744 } = geoData.results[0];
 
     // 2. Forecast API Step
-    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,&timezone=auto&forecast_days=5`;
+    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m,precipitation,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,&timezone=auto&forecast_days=5`;
     const weatherResponse = await fetch(weatherUrl);
     const weatherData = await weatherResponse.json();
 
@@ -141,6 +143,13 @@ function compass(deg) {
   return ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(deg / 45) % 8];
 }
 
+let unit = "C";
+
+function formatTemperature(celsius) {
+  const value = unit === "F" ? (celsius * 9) / 5 + 32 : celsius;
+  return `${Math.round(value)}`;
+}
+
 //Function for updating UI
 function updateUI(place, data) {
   const c = data.current,
@@ -156,7 +165,9 @@ function updateUI(place, data) {
     Math.round(c.wind_speed_10m) + " km/h " + compass(c.wind_direction_10m);
   $("rainNow").textContent = c.precipitation + " mm";
   $("rainChance").textContent = d.precipitation_probability_max[0] + "%";
+  $("uv").textContent = `${Number(c.uv_index).toFixed(1)}`;
 
+  //Daily forecast data update
   $("days").innerHTML = "";
   d.time.forEach((date, i) => {
     const [dLabel, dKind] = getWeatherCondition(d.weather_code[i]);
@@ -165,6 +176,8 @@ function updateUI(place, data) {
         ? "Today"
         : new Date(date + "T00:00:00").toLocaleDateString("en", {
             weekday: "short",
+            month: "short",
+            day: "numeric",
           });
     const el = document.createElement("div");
     el.className = "day";
@@ -186,6 +199,13 @@ function updateUI(place, data) {
     $("days").appendChild(el);
   });
   out.hidden = false;
+  toggleBtn.addEventListener("click", () => {
+    const isPressed = toggleBtn.getAttribute("aria-pressed") === "true";
+    unit = isPressed ? "C" : "F";
+    toggleBtn.setAttribute("aria-pressed", !isPressed);
+    $("temp").textContent = formatTemperature(c.temperature_2m) + "°" + unit;
+    toggleBtn.textContent = isPressed ? "°F" : "°C";
+  });
 }
 
 //Event Listener

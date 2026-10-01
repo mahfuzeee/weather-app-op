@@ -25,7 +25,12 @@
           <div class="icon" id="cIcon"></div>
           <div>
             <div class="place" id="place"></div>
-            <div class="temp" id="temp"></div>
+            <div class="temp-data">
+              <div class="temp" id="temp"></div>
+              <div class="unit">
+                <button type="button" id="unit" aria-pressed="false">°F</button>
+              </div>
+            </div>
             <div class="cond" id="cond"></div>
           </div>
           <div class="stats">
@@ -35,6 +40,9 @@
             </div>
             <div class="stat">
               <span>Rain chance today</span><strong id="rainChance"></strong>
+            </div>
+            <div class="stat">
+              <span>UV index</span><strong id="uv"></strong>
             </div>
           </div>
         </div>
